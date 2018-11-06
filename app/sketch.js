@@ -4,8 +4,8 @@ let params = {
   guideColor: '#ddd',
   showGuides: true,
   guideOpacity: 0.15,
-  barWeight: 20,
-  barOpacity: 1,
+  barWeight: 40,
+  barOpacity: 0.95,
 };
 
 class Shell {
@@ -116,9 +116,9 @@ function setup() {
   createCanvas(1280, 800, WEBGL);
 
   // ortho(-width / 2, width / 2, height / 2, -height / 2, -1000, 1000);
-  shell1 = new Shell(100, 0, 5, 10, '#1a419d');
-  shell2 = new Shell(120, 0, 5, 10, '#cdcdcd');
-  shell3 = new Shell(140, 0, 5, 10, '#ffd100');
+  shell1 = new Shell(240, 0, 0, 4, '#1a419d');
+  shell2 = new Shell(230, 0, 1, 5, '#cdcdcd');
+  shell3 = new Shell(250, 0, 5.5, 10, '#ffd100');
 
   createGUI();
 }
