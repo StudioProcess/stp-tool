@@ -22,21 +22,21 @@ class Shell {
     this.a_axis = 0; // axis angle
     this.a_orbit1 = 0; // orbit 1 angle
     this.a_orbit2 = 0; // orbit 2 angle
-    
+
     this.lastUpdate = 0;
     this.currentRadius = radius;
   }
-  
+
   update(now) {
     let dt = now - this.lastUpdate;
     this.lastUpdate = now;
     this.a_orbit1 += dt / 60000 * TWO_PI * this.rpm_orbit1;
     this.a_orbit2 += dt / 60000 * TWO_PI * this.rpm_orbit2;
     this.a_axis += dt / 60000 * TWO_PI * this.rpm_axis;
-    
+
     this.currentRadius = this.radius * (1 + this.radius_change * sin(now / 60000 * TWO_PI * this.radius_bpm));
   }
-  
+
   draw() {
     push();
     let c = color(params.guideColor);
@@ -47,7 +47,7 @@ class Shell {
     rotateY(this.a_axis);
     if (params.showGuides) box(10); // center
     if (params.showGuides) line (0, -this.currentRadius*1.5, 0, this.currentRadius*1.5); // y-axis
-    
+
     // particle 1
     let px1 = this.currentRadius * cos(this.a_orbit1);
     let py1 = this.currentRadius * sin(this.a_orbit1);
@@ -55,7 +55,7 @@ class Shell {
     translate( px1, py1 );
     if (params.showGuides) box(10);
     pop();
-    
+
     // particle 2
     let px2 = this.currentRadius * cos(this.a_orbit2);
     let py2 = this.currentRadius * sin(this.a_orbit2);
@@ -63,9 +63,9 @@ class Shell {
     translate( px2, py2 );
     if (params.showGuides) box(10);
     pop();
-    
+
     if (params.showGuides) ellipse(0, 0, this.currentRadius*2);
-      
+
     c = color(this.color);
     c.setAlpha(params.barOpacity * 255);
     stroke(c);
@@ -99,11 +99,11 @@ function createGUI() {
   gui.add(params, 'guideOpacity', 0, 1);
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
-  
+
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
   createShellGUI(shell3, 'shell3');
-  
+
   const dg = document.querySelector('.dg');
   const stopProp = (e) => e.stopPropagation();
   dg.addEventListener('mousedown', stopProp)
@@ -119,7 +119,7 @@ function setup() {
   shell1 = new Shell(100, 0, 5, 10, '#1a419d');
   shell2 = new Shell(120, 0, 5, 10, '#cdcdcd');
   shell3 = new Shell(140, 0, 5, 10, '#ffd100');
-  
+
   createGUI();
 }
 
@@ -135,7 +135,7 @@ function draw() {
   update();
   background(params.bgColor);
   orbitControl();
-  
+
   shell1.draw();
   shell2.draw();
   shell3.draw();
@@ -148,7 +148,7 @@ function keyPressed() {
   } else if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
-    saveCanvas(new Date().toISOString());
+    saveCanvas(new Date().toISOString()+".png");
   } else if (key == ' ') {
     clock.toggle();
   }
@@ -156,4 +156,4 @@ function keyPressed() {
 
 // console.log(document.querySelector('.dg'));
 // document.addEventListener('DOMContentLoaded')
-// 
+//
