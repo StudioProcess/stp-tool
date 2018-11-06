@@ -9,8 +9,8 @@ let params = {
 };
 
 class Shell {
-  constructor(radius = 100, rpm_axis = 1, rpm_orbit1 = 5, rpm_orbit2 = 10) {
-    this.color = '#444';
+  constructor(radius = 100, rpm_axis = 1, rpm_orbit1 = 5, rpm_orbit2 = 10, color = '#444') {
+    this.color = color;
     this.radius = radius; // radius of the orbit
     this.radius_bpm = 6;
     this.radius_change = 0;
@@ -86,9 +86,9 @@ function createShellGUI(shell, name = shell) {
   folder.add(shell, 'radius', 0, 400);
   // folder.add(shell, 'radius_bpm', 0, 20, 0.1);
   // folder.add(shell, 'radius_change', 0, 1, 0.01);
-  folder.add(shell, 'rpm_axis', 0, 12, 0.1);
-  folder.add(shell, 'rpm_orbit1', 0, 12, 0.1);
-  folder.add(shell, 'rpm_orbit2', 0, 12, 0.1);
+  folder.add(shell, 'rpm_axis', 0, 3, 0.1);
+  folder.add(shell, 'rpm_orbit1', 0, 3, 0.1);
+  folder.add(shell, 'rpm_orbit2', 0, 3, 0.1);
 }
 
 function createGUI() {
@@ -116,9 +116,9 @@ function setup() {
   createCanvas(1280, 800, WEBGL);
 
   // ortho(-width / 2, width / 2, height / 2, -height / 2, -1000, 1000);
-  shell1 = new Shell(100, 1);
-  shell2 = new Shell(120, 1);
-  shell3 = new Shell(140, 1);
+  shell1 = new Shell(100, 0, 5, 10, '#1a419d');
+  shell2 = new Shell(120, 0, 5, 10, '#cdcdcd');
+  shell3 = new Shell(140, 0, 5, 10, '#ffd100');
   
   createGUI();
 }
