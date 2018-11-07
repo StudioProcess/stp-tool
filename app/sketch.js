@@ -8,6 +8,24 @@ let params = {
   barOpacity: 0.95,
 };
 
+// draw a cuboid bar between two points
+function bar(ax, ay, bx, by) {
+  let d = dist(ax, ay, bx, by); // distance
+  let a = atan2(by-ay, bx-ax); // angle
+  let mx = ax + (bx-ax) / 2;
+  let my = ay + (by-ay) / 2;
+  
+  push();
+  // stroke(128); strokeWeight(1); fill(0);
+  // draw endpoints (for debugging)
+  // push(); translate(ax, ay); rotate(a+HALF_PI); box(10); pop();
+  // push(); translate(bx, by); rotate(a+HALF_PI); box(10); pop();
+  translate(mx, my);
+  rotate(a+HALF_PI);
+  box(params.barWeight, d, params.barWeight);
+  pop();
+}
+
 class Shell {
   constructor(radius = 100, rpm_axis = 1, rpm_orbit1 = 5, rpm_orbit2 = 10, color = '#444') {
     this.color = color;
@@ -68,9 +86,9 @@ class Shell {
 
     c = color(this.color);
     c.setAlpha(params.barOpacity * 255);
-    stroke(c);
-    strokeWeight(params.barWeight);
-    line(px1, py1, px2, py2);
+    fill(c); noStroke()
+    // stroke(c); strokeWeight(params.barWeight); line(px1, py1, px2, py2);
+    bar(px1, py1, px2, py2);
     pop();
   }
 }
@@ -115,7 +133,7 @@ function setup() {
   pixelDensity(displayDensity());
   createCanvas(1280, 800, WEBGL);
 
-  // ortho(-width / 2, width / 2, height / 2, -height / 2, -1000, 1000);
+  ortho(-width / 2, width / 2, height / 2, -height / 2, -100000, 100000);
   shell1 = new Shell(240, 0, 0, 4, '#1a419d');
   shell2 = new Shell(230, 0, 1, 5, '#cdcdcd');
   shell3 = new Shell(250, 0, 5.5, 10, '#ffd100');
