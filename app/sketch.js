@@ -142,6 +142,12 @@ function createGUI() {
   const stopProp = (e) => e.stopPropagation();
   dg.addEventListener('mousedown', stopProp)
   dg.addEventListener('wheel', stopProp);
+  dg.addEventListener('keydown', (e) => {
+    if (e.key == ' ') {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  });
 }
 
 function setupCamera() {
