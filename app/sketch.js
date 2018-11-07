@@ -5,9 +5,9 @@ let params = {
   guideOpacity: 0.15,
   barWeight: 40,
   barOpacity: 0.95,
-  useBlocks: false,
   useOrtho: false,
   barMirroring: false,
+  useElement: 0, // 0..flat-bar, 1..block, 2..tube
 };
 
 // draw a cuboid block between two points
@@ -25,6 +25,19 @@ function block(ax, ay, bx, by) {
   translate(mx, my);
   rotate(a+HALF_PI);
   box(params.barWeight, d, params.barWeight);
+  pop();
+}
+
+// draw a cylinder between two points
+function tube(ax, ay, bx, by, detail = 24) {
+  let d = dist(ax, ay, bx, by); // distance
+  let a = atan2(by-ay, bx-ax); // angle
+  let mx = ax + (bx-ax) / 2;
+  let my = ay + (by-ay) / 2;
+  push();
+  translate(mx, my);
+  rotate(a+HALF_PI);
+  cylinder(params.barWeight/2, d, detail, 1, true, true);
   pop();
 }
 
@@ -92,10 +105,14 @@ class Shell {
 
     c = color(this.color);
     c.setAlpha(params.barOpacity * 255);
-    if (params.useBlocks) {
+    if (Math.floor(params.useElement) == 1) {
       fill(c); noStroke()
       block(px1, py1, px2, py2);
       if (params.barMirroring) { block(mx1, my1, mx2, my2); }
+    } else if (Math.floor(params.useElement) == 2) {
+      fill(c); noStroke()
+      tube(px1, py1, px2, py2);
+      if (params.barMirroring) { tube(mx1, my1, mx2, my2); }
     } else {
       noFill(); stroke(c); strokeWeight(params.barWeight);
       line(px1, py1, px2, py2);
@@ -130,7 +147,8 @@ function createGUI() {
   c_guide = gui.add(params, 'showGuides');
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
-  c_useBlocks = gui.add(params, 'useBlocks');
+  // c_useBlocks = gui.add(params, 'useBlocks');
+  // c_useElement = gui.add(params, 'useElement', 0, 2);
   c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
   c_barMirroring = gui.add(params, 'barMirroring');
   
@@ -211,9 +229,11 @@ function keyPressed() {
   } else if (key == 'm') {
     params.barMirroring = !params.barMirroring;
     c_barMirroring.updateDisplay();
+  } else if (key == '1') {
+    params.useElement = 0;
+  } else if (key == '2') {
+    params.useElement = 1;
+  } else if (key == '3') {
+    params.useElement = 2;
   }
 }
-
-// console.log(document.querySelector('.dg'));
-// document.addEventListener('DOMContentLoaded')
-//
