@@ -5,8 +5,9 @@ let params = {
   guideOpacity: 0.15,
   barWeight: 40,
   barOpacity: 0.95,
-  useOrtho: false,
   useBlocks: false,
+  useOrtho: false,
+  barMirroring: false,
 };
 
 // draw a cuboid block between two points
@@ -67,9 +68,11 @@ class Shell {
     if (params.showGuides) box(10); // center
     if (params.showGuides) line (0, -this.currentRadius*1.5, 0, this.currentRadius*1.5); // y-axis
 
-    // particle 1
+    // particle 1 (+ mirror)
     let px1 = this.currentRadius * cos(this.a_orbit1);
     let py1 = this.currentRadius * sin(this.a_orbit1);
+    let mx1 = this.currentRadius * cos(this.a_orbit1 + PI);
+    let my1 = this.currentRadius * sin(this.a_orbit1 + PI);
     push();
     translate( px1, py1 );
     if (params.showGuides) box(10);
@@ -78,6 +81,8 @@ class Shell {
     // particle 2
     let px2 = this.currentRadius * cos(this.a_orbit2);
     let py2 = this.currentRadius * sin(this.a_orbit2);
+    let mx2 = this.currentRadius * cos(this.a_orbit2 + PI);
+    let my2 = this.currentRadius * sin(this.a_orbit2 + PI);
     push();
     translate( px2, py2 );
     if (params.showGuides) box(10);
@@ -90,9 +95,11 @@ class Shell {
     if (params.useBlocks) {
       fill(c); noStroke()
       block(px1, py1, px2, py2);
+      if (params.barMirroring) { block(mx1, my1, mx2, my2); }
     } else {
-      noFill(); stroke(c); strokeWeight(params.barWeight); 
+      noFill(); stroke(c); strokeWeight(params.barWeight);
       line(px1, py1, px2, py2);
+      if (params.barMirroring) { line(mx1, my1, mx2, my2); }
     }
     pop();
   }
@@ -124,7 +131,8 @@ function createGUI() {
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
   gui.add(params, 'useBlocks');
-  gui.add(params, 'useOrtho').onFinishChange(() => {setupCamera();});
+  gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
+  gui.add(params, 'barMirroring');
   
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
