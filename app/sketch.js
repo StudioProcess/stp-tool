@@ -106,7 +106,7 @@ class Shell {
 }
 
 let shell1, shell2, shell3;
-let gui;
+let gui, c_guide, c_useBlocks, c_useOrtho, c_barMirroring;
 let clock;
 
 function createShellGUI(shell, name = shell) {
@@ -127,12 +127,12 @@ function createGUI() {
   gui.addColor(params, 'bgColor');
   gui.addColor(params, 'guideColor');
   gui.add(params, 'guideOpacity', 0, 1);
-  gui.add(params, 'showGuides');
+  c_guide = gui.add(params, 'showGuides');
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
-  gui.add(params, 'useBlocks');
-  gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
-  gui.add(params, 'barMirroring');
+  c_useBlocks = gui.add(params, 'useBlocks');
+  c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
+  c_barMirroring = gui.add(params, 'barMirroring');
   
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
@@ -198,6 +198,19 @@ function keyPressed() {
     saveCanvas(new Date().toISOString(), 'png');
   } else if (key == ' ') {
     clock.toggle();
+  } else if (key == 'g') {
+    params.showGuides = !params.showGuides;
+    c_guide.updateDisplay();
+  } else if (key == 'o') {
+    params.useOrtho = !params.useOrtho;
+    c_useOrtho.updateDisplay();
+    setupCamera();
+  } else if (key == 'b') {
+    params.useBlocks = !params.useBlocks;
+    c_useBlocks.updateDisplay();
+  } else if (key == 'm') {
+    params.barMirroring = !params.barMirroring;
+    c_barMirroring.updateDisplay();
   }
 }
 
