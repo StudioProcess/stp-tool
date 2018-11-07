@@ -1,4 +1,3 @@
-
 let params = {
   bgColor: '#fff',
   guideColor: '#ddd',
@@ -6,10 +5,12 @@ let params = {
   guideOpacity: 0.15,
   barWeight: 40,
   barOpacity: 0.95,
+  useOrtho: false,
+  useBlocks: false,
 };
 
-// draw a cuboid bar between two points
-function bar(ax, ay, bx, by) {
+// draw a cuboid block between two points
+function block(ax, ay, bx, by) {
   let d = dist(ax, ay, bx, by); // distance
   let a = atan2(by-ay, bx-ax); // angle
   let mx = ax + (bx-ax) / 2;
@@ -86,9 +87,13 @@ class Shell {
 
     c = color(this.color);
     c.setAlpha(params.barOpacity * 255);
-    fill(c); noStroke()
-    // stroke(c); strokeWeight(params.barWeight); line(px1, py1, px2, py2);
-    bar(px1, py1, px2, py2);
+    if (params.useBlocks) {
+      fill(c); noStroke()
+      block(px1, py1, px2, py2);
+    } else {
+      noFill(); stroke(c); strokeWeight(params.barWeight); 
+      line(px1, py1, px2, py2);
+    }
     pop();
   }
 }
@@ -115,9 +120,12 @@ function createGUI() {
   gui.addColor(params, 'bgColor');
   gui.addColor(params, 'guideColor');
   gui.add(params, 'guideOpacity', 0, 1);
+  gui.add(params, 'showGuides');
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
-
+  gui.add(params, 'useBlocks');
+  gui.add(params, 'useOrtho').onFinishChange(() => {setupCamera();});
+  
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
   createShellGUI(shell3, 'shell3');
@@ -128,12 +136,21 @@ function createGUI() {
   dg.addEventListener('wheel', stopProp);
 }
 
+function setupCamera() {
+  if (params.useOrtho) {
+    // ortho(-width / 2, width / 2, height / 2, -height / 2, -100000, 100000);
+    ortho();
+  } else {
+    perspective();
+  }
+}
+
 function setup() {
   clock = new Clock();
   pixelDensity(displayDensity());
   createCanvas(1280, 800, WEBGL);
+  setupCamera();
 
-  ortho(-width / 2, width / 2, height / 2, -height / 2, -100000, 100000);
   shell1 = new Shell(240, 0, 0, 4, '#1a419d');
   shell2 = new Shell(230, 0, 1, 5, '#cdcdcd');
   shell3 = new Shell(250, 0, 5.5, 10, '#ffd100');
@@ -161,9 +178,7 @@ function draw() {
 
 function keyPressed() {
   // console.log(key, keyCode);
-  if (key == 'g') {
-    params.showGuides = !params.showGuides;
-  } else if (key == 'f') {
+  if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
     saveCanvas(new Date().toISOString(), 'png');
