@@ -148,7 +148,7 @@ function keyPressed() {
   } else if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
-    saveCanvas(new Date().toISOString());
+    saveCanvas(new Date().toISOString(), 'png');
   } else if (key == ' ') {
     clock.toggle();
   }
