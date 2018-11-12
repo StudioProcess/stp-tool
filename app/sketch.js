@@ -16,7 +16,7 @@ function block(ax, ay, bx, by) {
   let a = atan2(by-ay, bx-ax); // angle
   let mx = ax + (bx-ax) / 2;
   let my = ay + (by-ay) / 2;
-  
+
   push();
   // stroke(128); strokeWeight(1); fill(0);
   // draw endpoints (for debugging)
@@ -151,7 +151,7 @@ function createGUI() {
   // c_useElement = gui.add(params, 'useElement', 0, 2);
   c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
   c_barMirroring = gui.add(params, 'barMirroring');
-  
+
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
   createShellGUI(shell3, 'shell3');
@@ -183,9 +183,9 @@ function setup() {
   createCanvas(1280, 800, WEBGL);
   setupCamera();
 
-  shell1 = new Shell(240, 0, 0, 4, '#1a419d');
-  shell2 = new Shell(230, 0, 1, 5, '#cdcdcd');
-  shell3 = new Shell(250, 0, 5.5, 10, '#ffd100');
+  shell1 = new Shell(240, 0, 0, 4, '#161616');
+  shell2 = new Shell(230, 0, 1, 5, '#fc1b46');
+  shell3 = new Shell(250, 0, 5.5, 10, '#194788');
 
   createGUI();
 }
