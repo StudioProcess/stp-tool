@@ -8,6 +8,7 @@ let params = {
   useOrtho: false,
   barMirroring: false,
   useElement: 0, // 0..flat-bar, 1..block, 2..tube
+  connections: 0, // 1..lerp-loop, 2..lerp-triangles
 };
 
 // draw a cuboid block between two points
@@ -86,6 +87,7 @@ class Shell {
     let py1 = this.currentRadius * sin(this.a_orbit1);
     let mx1 = this.currentRadius * cos(this.a_orbit1 + PI);
     let my1 = this.currentRadius * sin(this.a_orbit1 + PI);
+    this.px1 = px1; this.py1 = py1; this.mx1 = mx1; this.my1 = my1;
     push();
     translate( px1, py1 );
     if (params.showGuides) box(10);
@@ -96,6 +98,7 @@ class Shell {
     let py2 = this.currentRadius * sin(this.a_orbit2);
     let mx2 = this.currentRadius * cos(this.a_orbit2 + PI);
     let my2 = this.currentRadius * sin(this.a_orbit2 + PI);
+    this.px2 = px2; this.py2 = py2; this.mx2 = mx2; this.my2 = my2;
     push();
     translate( px2, py2 );
     if (params.showGuides) box(10);
@@ -198,6 +201,16 @@ function update() {
   shell3.update(now);
 }
 
+function lerpLine(ax, ay, bx, by, ca, cb, segments = 50) {
+  // 0 – 1 – 2
+  for (let i=0; i<segments; i++) { 
+    let c = lerpColor( color(ca), color(cb), (i+0.5)/segments );
+    c.setAlpha(params.barOpacity * 255);
+    stroke(c);
+    line( ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1) );
+  }
+}
+
 function draw() {
   update();
   background(params.bgColor);
@@ -206,6 +219,38 @@ function draw() {
   shell1.draw();
   shell2.draw();
   shell3.draw();
+  
+  if (params.connections == 1) {
+    push();
+    strokeWeight(params.barWeight);
+    lerpLine(shell1.px2, shell1.py2, shell2.px1, shell2.py1, shell1.color, shell2.color);
+    lerpLine(shell2.px2, shell2.py2, shell3.px1, shell3.py1, shell2.color, shell3.color);
+    lerpLine(shell3.px2, shell3.py2, shell1.px1, shell1.py1, shell3.color, shell1.color);
+    if (params.barMirroring) {
+      lerpLine(shell1.mx2, shell1.my2, shell2.mx1, shell2.my1, shell1.color, shell2.color);
+      lerpLine(shell2.mx2, shell2.my2, shell3.mx1, shell3.my1, shell2.color, shell3.color);
+      lerpLine(shell3.mx2, shell3.my2, shell1.mx1, shell1.my1, shell3.color, shell1.color);
+    }
+    pop();
+  } else if (params.connections == 2) {
+    push();
+    strokeWeight(params.barWeight);
+    lerpLine(shell1.px1, shell1.py1, shell2.px1, shell2.py1, shell1.color, shell2.color);
+    lerpLine(shell2.px1, shell2.py1, shell3.px1, shell3.py1, shell2.color, shell3.color);
+    lerpLine(shell3.px1, shell3.py1, shell1.px1, shell1.py1, shell3.color, shell1.color);
+    lerpLine(shell1.px2, shell1.py2, shell2.px2, shell2.py2, shell1.color, shell2.color);
+    lerpLine(shell2.px2, shell2.py2, shell3.px2, shell3.py2, shell2.color, shell3.color);
+    lerpLine(shell3.px2, shell3.py2, shell1.px2, shell1.py2, shell3.color, shell1.color);
+    if (params.barMirroring) {
+      lerpLine(shell1.mx1, shell1.my1, shell2.mx1, shell2.my1, shell1.color, shell2.color);
+      lerpLine(shell2.mx1, shell2.my1, shell3.mx1, shell3.my1, shell2.color, shell3.color);
+      lerpLine(shell3.mx1, shell3.my1, shell1.mx1, shell1.my1, shell3.color, shell1.color);
+      lerpLine(shell1.mx2, shell1.my2, shell2.mx2, shell2.my2, shell1.color, shell2.color);
+      lerpLine(shell2.mx2, shell2.my2, shell3.mx2, shell3.my2, shell2.color, shell3.color);
+      lerpLine(shell3.mx2, shell3.my2, shell1.mx2, shell1.my2, shell3.color, shell1.color);
+    }
+    pop();
+  }
 }
 
 function keyPressed() {
@@ -235,5 +280,11 @@ function keyPressed() {
     params.useElement = 1;
   } else if (key == '3') {
     params.useElement = 2;
+  } else if (key == 'q') {
+    params.connections = 0;
+  } else if (key == 'w') {
+    params.connections = 1;
+  } else if (key == 'e') {
+    params.connections = 2;
   }
 }
