@@ -201,13 +201,45 @@ function update() {
   shell3.update(now);
 }
 
-function lerpLine(ax, ay, bx, by, ca, cb, segments = 50) {
+function lerpLine(ax, ay, az,   bx, by, bz,   cola, colb,   segments = 50) {
   // 0 – 1 – 2
   for (let i=0; i<segments; i++) { 
-    let c = lerpColor( color(ca), color(cb), (i+0.5)/segments );
+    let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
     c.setAlpha(params.barOpacity * 255);
     stroke(c);
-    line( ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1) );
+    line(
+      ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, az+(bz-az)/segments*i,
+      ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1), az+(bz-az)/segments*(i+1)
+    );
+  }
+}
+
+
+function connectShells(shell1, shell2, p1, p2, mirror = false) {
+  if (!mirror) {
+    shell1.pz1 = -shell1.px1 * sin(shell1.a_axis); shell1.new_px1 = shell1.px1 * cos(shell1.a_axis);
+    shell1.pz2 = -shell1.px2 * sin(shell1.a_axis); shell1.new_px2 = shell1.px2 * cos(shell1.a_axis);
+    shell2.pz1 = -shell2.px1 * sin(shell2.a_axis); shell2.new_px1 = shell2.px1 * cos(shell2.a_axis);
+    shell2.pz2 = -shell2.px2 * sin(shell2.a_axis); shell2.new_px2 = shell2.px2 * cos(shell2.a_axis);
+    if (p1 == 1) {
+      if (p2 == 1) lerpLine(shell1.new_px1, shell1.py1, shell1.pz1,   shell2.new_px1, shell2.py1, shell2.pz1,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_px1, shell1.py1, shell1.pz1,   shell2.new_px2, shell2.py2, shell2.pz2,   shell1.color, shell2.color);
+    } else {
+      if (p2 == 1) lerpLine(shell1.new_px2, shell1.py2, shell1.pz2,   shell2.new_px1, shell2.py1, shell2.pz1,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_px2, shell1.py2, shell1.pz2,   shell2.new_px2, shell2.py2, shell2.pz2,   shell1.color, shell2.color);
+    }
+  } else {
+    shell1.mz1 = -shell1.mx1 * sin(shell1.a_axis); shell1.new_mx1 = shell1.mx1 * cos(shell1.a_axis);
+    shell1.mz2 = -shell1.mx2 * sin(shell1.a_axis); shell1.new_mx2 = shell1.mx2 * cos(shell1.a_axis);
+    shell2.mz1 = -shell2.mx1 * sin(shell2.a_axis); shell2.new_mx1 = shell2.mx1 * cos(shell2.a_axis);
+    shell2.mz2 = -shell2.mx2 * sin(shell2.a_axis); shell2.new_mx2 = shell2.mx2 * cos(shell2.a_axis);
+    if (p1 == 1) {
+      if (p2 == 1) lerpLine(shell1.new_mx1, shell1.my1, shell1.mz1,   shell2.new_mx1, shell2.my1, shell2.mz1,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_mx1, shell1.my1, shell1.mz1,   shell2.new_mx2, shell2.my2, shell2.mz2,   shell1.color, shell2.color);
+    } else {
+      if (p2 == 1) lerpLine(shell1.new_mx2, shell1.my2, shell1.mz2,   shell2.new_mx1, shell2.my1, shell2.mz1,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_mx2, shell1.my2, shell1.mz2,   shell2.new_mx2, shell2.my2, shell2.mz2,   shell1.color, shell2.color);
+    }
   }
 }
 
@@ -223,31 +255,23 @@ function draw() {
   if (params.connections == 1) {
     push();
     strokeWeight(params.barWeight);
-    lerpLine(shell1.px2, shell1.py2, shell2.px1, shell2.py1, shell1.color, shell2.color);
-    lerpLine(shell2.px2, shell2.py2, shell3.px1, shell3.py1, shell2.color, shell3.color);
-    lerpLine(shell3.px2, shell3.py2, shell1.px1, shell1.py1, shell3.color, shell1.color);
+    connectShells(shell1, shell2, 2, 1);
+    connectShells(shell2, shell3, 2, 1);
+    connectShells(shell3, shell1, 2, 1);
     if (params.barMirroring) {
-      lerpLine(shell1.mx2, shell1.my2, shell2.mx1, shell2.my1, shell1.color, shell2.color);
-      lerpLine(shell2.mx2, shell2.my2, shell3.mx1, shell3.my1, shell2.color, shell3.color);
-      lerpLine(shell3.mx2, shell3.my2, shell1.mx1, shell1.my1, shell3.color, shell1.color);
+      connectShells(shell1, shell2, 2, 1, true);
+      connectShells(shell2, shell3, 2, 1, true);
+      connectShells(shell3, shell1, 2, 1, true);
     }
     pop();
   } else if (params.connections == 2) {
     push();
     strokeWeight(params.barWeight);
-    lerpLine(shell1.px1, shell1.py1, shell2.px1, shell2.py1, shell1.color, shell2.color);
-    lerpLine(shell2.px1, shell2.py1, shell3.px1, shell3.py1, shell2.color, shell3.color);
-    lerpLine(shell3.px1, shell3.py1, shell1.px1, shell1.py1, shell3.color, shell1.color);
-    lerpLine(shell1.px2, shell1.py2, shell2.px2, shell2.py2, shell1.color, shell2.color);
-    lerpLine(shell2.px2, shell2.py2, shell3.px2, shell3.py2, shell2.color, shell3.color);
-    lerpLine(shell3.px2, shell3.py2, shell1.px2, shell1.py2, shell3.color, shell1.color);
+    connectShells(shell1, shell2, 1, 1); connectShells(shell2, shell3, 1, 1); connectShells(shell3, shell1, 1, 1);
+    connectShells(shell1, shell2, 2, 2); connectShells(shell2, shell3, 2, 2); connectShells(shell3, shell1, 2, 2);
     if (params.barMirroring) {
-      lerpLine(shell1.mx1, shell1.my1, shell2.mx1, shell2.my1, shell1.color, shell2.color);
-      lerpLine(shell2.mx1, shell2.my1, shell3.mx1, shell3.my1, shell2.color, shell3.color);
-      lerpLine(shell3.mx1, shell3.my1, shell1.mx1, shell1.my1, shell3.color, shell1.color);
-      lerpLine(shell1.mx2, shell1.my2, shell2.mx2, shell2.my2, shell1.color, shell2.color);
-      lerpLine(shell2.mx2, shell2.my2, shell3.mx2, shell3.my2, shell2.color, shell3.color);
-      lerpLine(shell3.mx2, shell3.my2, shell1.mx2, shell1.my2, shell3.color, shell1.color);
+      connectShells(shell1, shell2, 1, 1, true); connectShells(shell2, shell3, 1, 1, true); connectShells(shell3, shell1, 1, 1, true);
+      connectShells(shell1, shell2, 2, 2, true); connectShells(shell2, shell3, 2, 2, true); connectShells(shell3, shell1, 2, 2, true);
     }
     pop();
   }
