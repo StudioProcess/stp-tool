@@ -190,6 +190,12 @@ function setup() {
   shell2 = new Shell(230, 0, 1, 5, '#fc1b46');
   shell3 = new Shell(250, 0, 5.5, 10, '#194788');
 
+  /*
+  #c5f1ff #f9de83 #f9de83 #fff675 #ff6c6c #fc1b46 #ff6c6c #161616
+  #ff9494 #a1d078 #ff5151 #ff5151 #1b65fc #1b65fc #c1c1c1 #fc1b46
+  #ffea8f #5193ff #5193ff #5193ff #ffdf4f #e4fc1b #ffdf4f #194788
+  */
+
   createGUI();
 }
 
@@ -203,7 +209,7 @@ function update() {
 
 function lerpLine(ax, ay, az,   bx, by, bz,   cola, colb,   segments = 50) {
   // 0 – 1 – 2
-  for (let i=0; i<segments; i++) { 
+  for (let i=0; i<segments; i++) {
     let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
     c.setAlpha(params.barOpacity * 255);
     stroke(c);
@@ -251,7 +257,7 @@ function draw() {
   shell1.draw();
   shell2.draw();
   shell3.draw();
-  
+
   if (params.connections == 1) {
     push();
     strokeWeight(params.barWeight);
