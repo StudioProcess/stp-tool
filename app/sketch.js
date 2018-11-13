@@ -194,9 +194,15 @@ function setup() {
   createCanvas(1280, 800, WEBGL);
   setupCamera();
 
-  shell1 = new Shell(240, 0, 0, 4, '#161616');
-  shell2 = new Shell(230, 0, 1, 5, '#fc1b46');
-  shell3 = new Shell(250, 0, 5.5, 10, '#194788');
+  shell1 = new Shell(240, 0, 0, 4, '#c5f1ff');
+  shell2 = new Shell(230, 0, 1, 5, '#ff9494');
+  shell3 = new Shell(250, 0, 5.5, 10, '#ffea8f');
+
+  /*
+  #c5f1ff #f9de83 #f9de83 #fff675 #ff6c6c #fc1b46 #ff6c6c #161616
+  #ff9494 #a1d078 #ff5151 #ff5151 #1b65fc #1b65fc #c1c1c1 #fc1b46
+  #ffea8f #5193ff #5193ff #5193ff #ffdf4f #e4fc1b #ffdf4f #194788
+  */
 
   createGUI();
 }
@@ -272,7 +278,7 @@ function draw() {
   shell1.draw();
   shell2.draw();
   shell3.draw();
-  
+
   if (params.connections == 1) {
     push();
     strokeWeight(params.barWeight);
