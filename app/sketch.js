@@ -3,7 +3,7 @@ let params = {
   guideColor: '#ddd',
   showGuides: true,
   guideOpacity: 0.15,
-  barWeight: 40,
+  barWeight: 60,
   barOpacity: 0.95,
   useOrtho: false,
   barMirroring: false,
@@ -124,7 +124,7 @@ class Shell {
       lerpLine(px1, py1, 0, px2, py2, 0, c, c);
       if (params.barMirroring) {
         // line(mx1, my1, mx2, my2);
-        lerpLine(mx1, my1, 0, mx2, my2, 0, c, c); 
+        lerpLine(mx1, my1, 0, mx2, my2, 0, c, c);
       }
     }
     pop();
@@ -200,9 +200,9 @@ function setup() {
   shell3 = new Shell(250, 0, 5.5, 10, '#ffea8f');
 
   /*
-  #c5f1ff #f9de83 #f9de83 #fff675 #ff6c6c #fc1b46 #ff6c6c #161616
-  #ff9494 #a1d078 #ff5151 #ff5151 #1b65fc #1b65fc #c1c1c1 #fc1b46
-  #ffea8f #5193ff #5193ff #5193ff #ffdf4f #e4fc1b #ffdf4f #194788
+  #815d95 #c5f1ff #f9de83 #f9de83 #fff675 #ff6c6c #fc1b46 #ff6c6c #161616
+  #ada39c #ff9494 #a1d078 #ff5151 #ff5151 #1b65fc #1b65fc #c1c1c1 #fc1b46
+  #17a659 #ffea8f #5193ff #5193ff #5193ff #ffdf4f #e4fc1b #ffdf4f #194788
   */
 
   createGUI();
@@ -317,7 +317,7 @@ function slowDown() {
   getController('rpm_orbit2', c_shell2).setValue(0.7);
   getController('rpm_orbit1', c_shell3).setValue(0.9);
   getController('rpm_orbit2', c_shell3).setValue(0.9);
-  
+
   getController('rpm_axis', c_shell1).setValue(1.5);
   getController('rpm_axis', c_shell2).setValue(1.0);
   getController('rpm_axis', c_shell3).setValue(0.5);
