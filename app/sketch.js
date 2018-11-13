@@ -9,6 +9,8 @@ let params = {
   barMirroring: false,
   useElement: 0, // 0..flat-bar, 1..block, 2..tube
   connections: 0, // 1..lerp-loop, 2..lerp-triangles
+  segments: 50,
+  useDots: false,
 };
 
 // draw a cuboid block between two points
@@ -118,15 +120,19 @@ class Shell {
       if (params.barMirroring) { tube(mx1, my1, mx2, my2); }
     } else {
       noFill(); stroke(c); strokeWeight(params.barWeight);
-      line(px1, py1, px2, py2);
-      if (params.barMirroring) { line(mx1, my1, mx2, my2); }
+      // line(px1, py1, px2, py2);
+      lerpLine(px1, py1, 0, px2, py2, 0, c, c);
+      if (params.barMirroring) {
+        // line(mx1, my1, mx2, my2);
+        lerpLine(mx1, my1, 0, mx2, my2, 0, c, c); 
+      }
     }
     pop();
   }
 }
 
 let shell1, shell2, shell3;
-let gui, c_guide, c_useBlocks, c_useOrtho, c_barMirroring;
+let gui, c_guide, c_useBlocks, c_useOrtho, c_barMirroring, c_useDots;
 let clock;
 
 function createShellGUI(shell, name = shell) {
@@ -154,6 +160,8 @@ function createGUI() {
   // c_useElement = gui.add(params, 'useElement', 0, 2);
   c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
   c_barMirroring = gui.add(params, 'barMirroring');
+  c_useDots = gui.add(params, 'useDots');
+  gui.add(params, 'segments', 1, 100);
 
   createShellGUI(shell1, 'shell1');
   createShellGUI(shell2, 'shell2');
@@ -201,19 +209,32 @@ function update() {
   shell3.update(now);
 }
 
-function lerpLine(ax, ay, az,   bx, by, bz,   cola, colb,   segments = 50) {
-  // 0 – 1 – 2
-  for (let i=0; i<segments; i++) { 
-    let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
-    c.setAlpha(params.barOpacity * 255);
-    stroke(c);
-    line(
-      ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, az+(bz-az)/segments*i,
-      ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1), az+(bz-az)/segments*(i+1)
-    );
+function lerpLine(ax, ay, az,   bx, by, bz,   cola, colb) {
+  let segments = params.segments;
+  if (!params.useDots) {
+    // 0 – 1 – 2
+    for (let i=0; i<segments; i++) {
+      let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
+      c.setAlpha(params.barOpacity * 255);
+      stroke(c);
+      line(
+        ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, az+(bz-az)/segments*i,
+        ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1), az+(bz-az)/segments*(i+1)
+      );
+    }
+  } else {
+    noStroke();
+    for (let i=0; i<=segments; i++) {
+      let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
+      c.setAlpha(params.barOpacity * 255);
+      fill(c);
+      push();
+      translate(ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, az+(bz-az)/segments*i);
+      sphere(params.barWeight/2);
+      pop();
+    }
   }
 }
-
 
 function connectShells(shell1, shell2, p1, p2, mirror = false) {
   if (!mirror) {
@@ -310,5 +331,8 @@ function keyPressed() {
     params.connections = 1;
   } else if (key == 'e') {
     params.connections = 2;
+  } else if (key == 'd') {
+    parmas.useDots = !params.useDots;
+    c_useDots.updateDisplay();
   }
 }
