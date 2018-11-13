@@ -132,7 +132,7 @@ class Shell {
 }
 
 let shell1, shell2, shell3;
-let gui, c_guide, c_useBlocks, c_useOrtho, c_barMirroring, c_useDots;
+let gui, c_guide, c_useBlocks, c_useOrtho, c_barMirroring, c_useDots, c_shell1, c_shell2, c_shell3;
 let clock;
 
 function createShellGUI(shell, name = shell) {
@@ -145,6 +145,7 @@ function createShellGUI(shell, name = shell) {
   folder.add(shell, 'rpm_axis', 0, 3, 0.1);
   folder.add(shell, 'rpm_orbit1', 0, 3, 0.1);
   folder.add(shell, 'rpm_orbit2', 0, 3, 0.1);
+  return folder;
 }
 
 function createGUI() {
@@ -163,9 +164,9 @@ function createGUI() {
   c_useDots = gui.add(params, 'useDots');
   gui.add(params, 'segments', 1, 100);
 
-  createShellGUI(shell1, 'shell1');
-  createShellGUI(shell2, 'shell2');
-  createShellGUI(shell3, 'shell3');
+  c_shell1 = createShellGUI(shell1, 'shell1');
+  c_shell2 = createShellGUI(shell2, 'shell2');
+  c_shell3 = createShellGUI(shell3, 'shell3');
 
   const dg = document.querySelector('.dg');
   const stopProp = (e) => e.stopPropagation();
@@ -304,6 +305,24 @@ function draw() {
   }
 }
 
+function getController(property, gui = gui) {
+  return gui.__controllers.filter(c => c.property == property)[0];
+}
+
+// Set rpm_orbit1 = 2 and pretty slow
+function slowDown() {
+  getController('rpm_orbit1', c_shell1).setValue(0.5);
+  getController('rpm_orbit2', c_shell1).setValue(0.5);
+  getController('rpm_orbit1', c_shell2).setValue(0.7);
+  getController('rpm_orbit2', c_shell2).setValue(0.7);
+  getController('rpm_orbit1', c_shell3).setValue(0.9);
+  getController('rpm_orbit2', c_shell3).setValue(0.9);
+  
+  getController('rpm_axis', c_shell1).setValue(1.5);
+  getController('rpm_axis', c_shell2).setValue(1.0);
+  getController('rpm_axis', c_shell3).setValue(0.5);
+}
+
 function keyPressed() {
   // console.log(key, keyCode);
   if (key == 'f') {
@@ -340,5 +359,7 @@ function keyPressed() {
   } else if (key == 'd') {
     params.useDots = !params.useDots;
     c_useDots.updateDisplay();
+  } else if (key == '0') {
+    slowDown();
   }
 }
