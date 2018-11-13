@@ -338,7 +338,7 @@ function keyPressed() {
   } else if (key == 'e') {
     params.connections = 2;
   } else if (key == 'd') {
-    parmas.useDots = !params.useDots;
+    params.useDots = !params.useDots;
     c_useDots.updateDisplay();
   }
 }
