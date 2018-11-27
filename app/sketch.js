@@ -1,3 +1,6 @@
+const RES_RUNTIME = 1000;
+const RES_EXPORT  = 4096; // 4096 seems to be max
+
 let params = {
   bgColor: '#fff',
   guideColor: '#ddd',
@@ -191,9 +194,10 @@ function setupCamera() {
 
 function setup() {
   clock = new Clock();
-  pixelDensity(displayDensity());
-  createCanvas(1280, 800, WEBGL);
+  createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
+  pixelDensity(1);
   setupCamera();
+  smooth();
 
   shell1 = new Shell(240, 0, 0, 4, '#c5f1ff');
   shell2 = new Shell(230, 0, 1, 5, '#ff9494');
@@ -323,12 +327,23 @@ function slowDown() {
   getController('rpm_axis', c_shell3).setValue(0.5);
 }
 
+function exportFrame() {
+  let wasRunning = clock.running;
+  if (wasRunning) clock.stop();
+  resizeCanvas(RES_EXPORT, RES_EXPORT);
+  // call to draw() not necessessary
+  saveCanvas(new Date().toISOString(), 'png');
+  noSmooth();
+  resizeCanvas(RES_RUNTIME, RES_RUNTIME);
+  if (wasRunning) clock.start();
+}
+
 function keyPressed() {
   // console.log(key, keyCode);
   if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
-    saveCanvas(new Date().toISOString(), 'png');
+    exportFrame();
   } else if (key == ' ') {
     clock.toggle();
   } else if (key == 'g') {
