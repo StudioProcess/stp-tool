@@ -8,7 +8,7 @@ let params = {
   guideOpacity: 0.15,
   barWeight: 60,
   barOpacity: 0.95,
-  useOrtho: false,
+  useOrtho: true,
   barMirroring: false,
   useElement: 0, // 0..flat-bar, 1..block, 2..tube
   connections: 0, // 1..lerp-loop, 2..lerp-triangles
@@ -184,6 +184,11 @@ function createGUI() {
 }
 
 function setupCamera() {
+  if (exportUsed) {
+    // BUG: once smooth() was called (for export), switching projection doesn't work, so we just make an entirely new canvas
+    noCanvas();
+    createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
+  }
   if (params.useOrtho) {
     // ortho(-width / 2, width / 2, height / 2, -height / 2, -100000, 100000);
     ortho();
@@ -197,7 +202,7 @@ function setup() {
   createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
   pixelDensity(1);
   setupCamera();
-  smooth();
+  // Start with implicit noSmooth()
 
   shell1 = new Shell(240, 0, 0, 4, '#c5f1ff');
   shell2 = new Shell(230, 0, 1, 5, '#ff9494');
@@ -327,15 +332,20 @@ function slowDown() {
   getController('rpm_axis', c_shell3).setValue(0.5);
 }
 
+let exportUsed = false;
+
 function exportFrame() {
   let wasRunning = clock.running;
   if (wasRunning) clock.stop();
+  smooth(); // needs to be before resizeCanvas() otherwise the export is empty
   resizeCanvas(RES_EXPORT, RES_EXPORT);
   // call to draw() not necessessary
   saveCanvas(new Date().toISOString(), 'png');
+
   noSmooth();
   resizeCanvas(RES_RUNTIME, RES_RUNTIME);
   if (wasRunning) clock.start();
+  exportUsed = true;
 }
 
 function keyPressed() {
