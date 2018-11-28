@@ -176,7 +176,7 @@ function createGUI() {
   c_barMirroring = gui.add(params, 'barMirroring');
   c_useDots = gui.add(params, 'useDots');
   gui.add(params, 'segments', 1, 100);
-  gui.add(params, 'rotationSteps', 4, 32);
+  gui.add(params, 'rotationSteps', 3, 50);
 
   c_shell1 = createShellGUI(shell1, 'shell1');
   c_shell2 = createShellGUI(shell2, 'shell2');
