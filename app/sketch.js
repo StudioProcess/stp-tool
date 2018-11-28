@@ -363,7 +363,7 @@ function exportFrame() {
 }
 
 function keyPressed() {
-  console.log(key, keyCode);
+  // console.log(key, keyCode);
   if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
@@ -412,6 +412,9 @@ function keyPressed() {
     rotation[2] -= TWO_PI/params.rotationSteps;
   } else if (key == '.') {
     rotation[2] += TWO_PI/params.rotationSteps;
+  } else if (key == 'Backspace') {
+    // reset transformations
+    globalScale = 1; translation = [0,0]; rotation = [0,0,0];
   }
 }
 
