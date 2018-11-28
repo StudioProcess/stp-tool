@@ -1,10 +1,6 @@
 const RES_RUNTIME = 1000;
 const RES_EXPORT  = 4096; // 4096 seems to be max
 
-let globalScale = 1; // doesn't work because lineweights aren't scaled
-let rotation = [0,0,0];
-let translation = [0,0];
-
 const scaleSensitivity = 1;
 const rotationSensitivity = 2;
 const translationSensitivity = 1;
@@ -24,6 +20,11 @@ let params = {
   useDots: false,
   rotationSteps: 16
 };
+
+let globalScale = 1;
+const globalScaleMax = 30;
+let rotation = [0,0,0];
+let translation = [0,0];
 
 // draw a cuboid block between two points
 function block(ax, ay, bx, by) {
@@ -449,6 +450,8 @@ function customControl() {
   // WHEEL: object scale
   if (this._mouseWheelDeltaY !== this._pmouseWheelDeltaY) {
     globalScale *= 1 - scaleSensitivity/1000*this._mouseWheelDeltaY;
+    if (globalScale < 1/globalScaleMax) globalScale = 1/globalScaleMax;
+    else if (globalScale > globalScaleMax) globalScale = globalScaleMax;
   }
   
   translate(translation[0], translation[1]);
