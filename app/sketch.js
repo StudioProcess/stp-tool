@@ -1,6 +1,14 @@
 const RES_RUNTIME = 1000;
 const RES_EXPORT  = 4096; // 4096 seems to be max
 
+let globalScale = 1; // doesn't work because lineweights aren't scaled
+let rotation = [0,0];
+let translation = [0,0];
+
+const scaleSensitivity = 1;
+const rotationSensitivity = 2;
+const translationSensitivity = 1;
+
 let params = {
   bgColor: '#fff',
   guideColor: '#ddd',
@@ -24,7 +32,7 @@ function block(ax, ay, bx, by) {
   let my = ay + (by-ay) / 2;
 
   push();
-  // stroke(128); strokeWeight(1); fill(0);
+  // stroke(128); strokeWeight(1*globalScale); fill(0);
   // draw endpoints (for debugging)
   // push(); translate(ax, ay); rotate(a+HALF_PI); box(10); pop();
   // push(); translate(bx, by); rotate(a+HALF_PI); box(10); pop();
@@ -81,7 +89,7 @@ class Shell {
     let c = color(params.guideColor);
     c.setAlpha(params.guideOpacity*255)
     stroke(c);
-    strokeWeight(1);
+    strokeWeight(1*globalScale);
     noFill();
     rotateY(this.a_axis);
     if (params.showGuides) box(10); // center
@@ -122,7 +130,7 @@ class Shell {
       tube(px1, py1, px2, py2);
       if (params.barMirroring) { tube(mx1, my1, mx2, my2); }
     } else {
-      noFill(); stroke(c); strokeWeight(params.barWeight);
+      noFill(); stroke(c); strokeWeight(params.barWeight*globalScale);
       // line(px1, py1, px2, py2);
       lerpLine(px1, py1, 0, px2, py2, 0, c, c);
       if (params.barMirroring) {
@@ -188,6 +196,7 @@ function setupCamera() {
     // BUG: once smooth() was called (for export), switching projection doesn't work, so we just make an entirely new canvas
     noCanvas();
     createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
+    disableEventDefaults();
   }
   if (params.useOrtho) {
     // ortho();
@@ -216,6 +225,7 @@ function setup() {
   */
 
   createGUI();
+  disableEventDefaults();
 }
 
 function update() {
@@ -282,9 +292,9 @@ function connectShells(shell1, shell2, p1, p2, mirror = false) {
 }
 
 function draw() {
+  customControl(); // instead of orbitControl()
   update();
   background(params.bgColor);
-  orbitControl();
 
   shell1.draw();
   shell2.draw();
@@ -292,7 +302,7 @@ function draw() {
 
   if (params.connections == 1) {
     push();
-    strokeWeight(params.barWeight);
+    strokeWeight(params.barWeight*globalScale);
     connectShells(shell1, shell2, 2, 1);
     connectShells(shell2, shell3, 2, 1);
     connectShells(shell3, shell1, 2, 1);
@@ -304,7 +314,7 @@ function draw() {
     pop();
   } else if (params.connections == 2) {
     push();
-    strokeWeight(params.barWeight);
+    strokeWeight(params.barWeight*globalScale);
     connectShells(shell1, shell2, 1, 1); connectShells(shell2, shell3, 1, 1); connectShells(shell3, shell1, 1, 1);
     connectShells(shell1, shell2, 2, 2); connectShells(shell2, shell3, 2, 2); connectShells(shell3, shell1, 2, 2);
     if (params.barMirroring) {
@@ -347,6 +357,7 @@ function exportFrame() {
   resizeCanvas(RES_RUNTIME, RES_RUNTIME);
   if (wasRunning) clock.start();
   exportUsed = true;
+  disableEventDefaults();
 }
 
 function keyPressed() {
@@ -388,4 +399,50 @@ function keyPressed() {
   } else if (key == '0') {
     slowDown();
   }
+}
+
+function disableEventDefaults() {
+  function x(e) { e.preventDefault(); }
+  this.canvas.oncontextmenu = x;
+  this.canvas.onwheel = x;
+}
+
+function customControl() {
+  // If the mouse is not in bounds of the canvas, disable all behaviors:
+  // var mouseInCanvas =
+  //   this.mouseX < this.width &&
+  //   this.mouseX > 0 &&
+  //   this.mouseY < this.height &&
+  //   this.mouseY > 0;
+  // if (!mouseInCanvas) return;
+  
+  var cam = this._renderer._curCamera;
+  var scaleFactor = this.height < this.width ? this.height : this.width;
+  
+  if (this.mouseIsPressed) {
+    // LMB: object rotation
+    if (this.mouseButton === this.LEFT) {
+      var deltaTheta = rotationSensitivity * (this.mouseX - this.pmouseX) / scaleFactor;
+      var deltaPhi = -rotationSensitivity * (this.mouseY - this.pmouseY) / scaleFactor;
+      // this._renderer._curCamera._orbit(deltaTheta, deltaPhi, 0);
+      rotation[0] += deltaTheta;
+      rotation[1] += deltaPhi;
+    }
+    // RMB: object translation
+    else if (this.mouseButton === this.RIGHT) {
+      var dx = translationSensitivity * (this.mouseX - this.pmouseX);
+      var dy = translationSensitivity * (this.mouseY - this.pmouseY);
+      translation[0] += dx;
+      translation[1] += dy;
+    }
+  }
+  
+  // WHEEL: object scale
+  if (this._mouseWheelDeltaY !== this._pmouseWheelDeltaY) {
+    globalScale *= 1 - scaleSensitivity/1000*this._mouseWheelDeltaY;
+  }
+  
+  translate(translation[0], translation[1]);
+  rotateY(rotation[0]); rotateX(rotation[1]);
+  scale(globalScale);
 }
