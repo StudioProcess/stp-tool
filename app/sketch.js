@@ -190,8 +190,9 @@ function setupCamera() {
     createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
   }
   if (params.useOrtho) {
-    // ortho(-width / 2, width / 2, height / 2, -height / 2, -100000, 100000);
-    ortho();
+    // ortho();
+    // ortho(-width/2, +width/2, -height/2, +height/2, 0, Math.max(width, height)); // default
+    ortho(-width/2, +width/2, -height/2, +height/2, -9999, 9999);
   } else {
     perspective();
   }
