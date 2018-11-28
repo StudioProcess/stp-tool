@@ -2,7 +2,7 @@ const RES_RUNTIME = 1000;
 const RES_EXPORT  = 4096; // 4096 seems to be max
 
 let globalScale = 1; // doesn't work because lineweights aren't scaled
-let rotation = [0,0];
+let rotation = [0,0,0];
 let translation = [0,0];
 
 const scaleSensitivity = 1;
@@ -22,6 +22,7 @@ let params = {
   connections: 0, // 1..lerp-loop, 2..lerp-triangles
   segments: 50,
   useDots: false,
+  rotationSteps: 16
 };
 
 // draw a cuboid block between two points
@@ -174,6 +175,7 @@ function createGUI() {
   c_barMirroring = gui.add(params, 'barMirroring');
   c_useDots = gui.add(params, 'useDots');
   gui.add(params, 'segments', 1, 100);
+  gui.add(params, 'rotationSteps', 4, 32);
 
   c_shell1 = createShellGUI(shell1, 'shell1');
   c_shell2 = createShellGUI(shell2, 'shell2');
@@ -361,7 +363,7 @@ function exportFrame() {
 }
 
 function keyPressed() {
-  // console.log(key, keyCode);
+  console.log(key, keyCode);
   if (key == 'f') {
     toggleFullscreen();
   } else if (key == 's') {
@@ -398,6 +400,18 @@ function keyPressed() {
     c_useDots.updateDisplay();
   } else if (key == '0') {
     slowDown();
+  } else if (key == 'ArrowLeft') {
+    rotation[0] -= TWO_PI/params.rotationSteps;
+  } else if (key == 'ArrowRight') {
+    rotation[0] += TWO_PI/params.rotationSteps;
+  } else if (key == 'ArrowDown') {
+    rotation[1] -= TWO_PI/params.rotationSteps;
+  } else if (key == 'ArrowUp') {
+    rotation[1] += TWO_PI/params.rotationSteps;
+  } else if (key == ',') {
+    rotation[2] -= TWO_PI/params.rotationSteps;
+  } else if (key == '.') {
+    rotation[2] += TWO_PI/params.rotationSteps;
   }
 }
 
@@ -408,14 +422,6 @@ function disableEventDefaults() {
 }
 
 function customControl() {
-  // If the mouse is not in bounds of the canvas, disable all behaviors:
-  // var mouseInCanvas =
-  //   this.mouseX < this.width &&
-  //   this.mouseX > 0 &&
-  //   this.mouseY < this.height &&
-  //   this.mouseY > 0;
-  // if (!mouseInCanvas) return;
-  
   var cam = this._renderer._curCamera;
   var scaleFactor = this.height < this.width ? this.height : this.width;
   
@@ -443,6 +449,6 @@ function customControl() {
   }
   
   translate(translation[0], translation[1]);
-  rotateY(rotation[0]); rotateX(rotation[1]);
+  rotateY(rotation[0]); rotateX(rotation[1]); rotateZ(rotation[2]);
   scale(globalScale);
 }
