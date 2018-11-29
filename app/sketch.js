@@ -11,7 +11,7 @@ let params = {
   showGuides: true,
   guideOpacity: 0.15,
   barWeight: 60,
-  barOpacity: 0.95,
+  barOpacity: 0.99,
   useOrtho: true,
   barMirroring: false,
   useElement: 0, // 0..flat-bar, 1..block, 2..tube
@@ -430,7 +430,7 @@ function disableEventDefaults() {
 function customControl() {
   var cam = this._renderer._curCamera;
   var scaleFactor = this.height < this.width ? this.height : this.width;
-  
+
   if (this.mouseIsPressed) {
     // LMB: object rotation
     if (this.mouseButton === this.LEFT) {
@@ -448,14 +448,14 @@ function customControl() {
       translation[1] += dy;
     }
   }
-  
+
   // WHEEL: object scale
   if (this._mouseWheelDeltaY !== this._pmouseWheelDeltaY) {
     globalScale *= 1 - scaleSensitivity/1000*this._mouseWheelDeltaY;
     if (globalScale < 1/globalScaleMax) globalScale = 1/globalScaleMax;
     else if (globalScale > globalScaleMax) globalScale = globalScaleMax;
   }
-  
+
   translate(translation[0], translation[1]);
   rotateY(rotation[0]); rotateX(rotation[1]); rotateZ(rotation[2]);
   scale(globalScale);
