@@ -74,6 +74,10 @@ class Shell {
 
     this.lastUpdate = 0;
     this.currentRadius = radius;
+    
+    this.offset_x = 0;
+    this.offset_y = 0;
+    this.offset_z = 0;
   }
 
   update(now) {
@@ -93,8 +97,11 @@ class Shell {
     stroke(c);
     strokeWeight(1*globalScale);
     noFill();
+    
+    if (params.showGuides) box(10); // absolute center (before translation)
+    translate(this.offset_x, this.offset_y, this.offset_z);
     rotateY(this.a_axis);
-    if (params.showGuides) box(10); // center
+    if (params.showGuides) box(10); // center 
     if (params.showGuides) line (0, -this.currentRadius*1.5, 0, this.currentRadius*1.5); // y-axis
 
     // particle 1 (+ mirror)
@@ -158,6 +165,9 @@ function createShellGUI(shell, name = shell) {
   folder.add(shell, 'rpm_axis', 0, 3, 0.1);
   folder.add(shell, 'rpm_orbit1', 0, 3, 0.1);
   folder.add(shell, 'rpm_orbit2', 0, 3, 0.1);
+  folder.add(shell, 'offset_x', -500, 500);
+  folder.add(shell, 'offset_y', -500, 500);
+  folder.add(shell, 'offset_z', -500, 500);
   return folder;
 }
 
@@ -276,11 +286,11 @@ function connectShells(shell1, shell2, p1, p2, mirror = false) {
     shell2.pz1 = -shell2.px1 * sin(shell2.a_axis); shell2.new_px1 = shell2.px1 * cos(shell2.a_axis);
     shell2.pz2 = -shell2.px2 * sin(shell2.a_axis); shell2.new_px2 = shell2.px2 * cos(shell2.a_axis);
     if (p1 == 1) {
-      if (p2 == 1) lerpLine(shell1.new_px1, shell1.py1, shell1.pz1,   shell2.new_px1, shell2.py1, shell2.pz1,   shell1.color, shell2.color);
-      else         lerpLine(shell1.new_px1, shell1.py1, shell1.pz1,   shell2.new_px2, shell2.py2, shell2.pz2,   shell1.color, shell2.color);
+      if (p2 == 1) lerpLine(shell1.new_px1+shell1.offset_x, shell1.py1+shell1.offset_y, shell1.pz1+shell1.offset_z,   shell2.new_px1+shell2.offset_x, shell2.py1+shell2.offset_y, shell2.pz1+shell2.offset_z,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_px1+shell1.offset_x, shell1.py1+shell1.offset_y, shell1.pz1+shell1.offset_z,   shell2.new_px2+shell2.offset_x, shell2.py2+shell2.offset_y, shell2.pz2+shell2.offset_z,   shell1.color, shell2.color);
     } else {
-      if (p2 == 1) lerpLine(shell1.new_px2, shell1.py2, shell1.pz2,   shell2.new_px1, shell2.py1, shell2.pz1,   shell1.color, shell2.color);
-      else         lerpLine(shell1.new_px2, shell1.py2, shell1.pz2,   shell2.new_px2, shell2.py2, shell2.pz2,   shell1.color, shell2.color);
+      if (p2 == 1) lerpLine(shell1.new_px2+shell1.offset_x, shell1.py2+shell1.offset_y, shell1.pz2+shell1.offset_z,   shell2.new_px1+shell2.offset_x, shell2.py1+shell2.offset_y, shell2.pz1+shell2.offset_z,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_px2+shell1.offset_x, shell1.py2+shell1.offset_y, shell1.pz2+shell1.offset_z,   shell2.new_px2+shell2.offset_x, shell2.py2+shell2.offset_y, shell2.pz2+shell2.offset_z,   shell1.color, shell2.color);
     }
   } else {
     shell1.mz1 = -shell1.mx1 * sin(shell1.a_axis); shell1.new_mx1 = shell1.mx1 * cos(shell1.a_axis);
@@ -288,11 +298,11 @@ function connectShells(shell1, shell2, p1, p2, mirror = false) {
     shell2.mz1 = -shell2.mx1 * sin(shell2.a_axis); shell2.new_mx1 = shell2.mx1 * cos(shell2.a_axis);
     shell2.mz2 = -shell2.mx2 * sin(shell2.a_axis); shell2.new_mx2 = shell2.mx2 * cos(shell2.a_axis);
     if (p1 == 1) {
-      if (p2 == 1) lerpLine(shell1.new_mx1, shell1.my1, shell1.mz1,   shell2.new_mx1, shell2.my1, shell2.mz1,   shell1.color, shell2.color);
-      else         lerpLine(shell1.new_mx1, shell1.my1, shell1.mz1,   shell2.new_mx2, shell2.my2, shell2.mz2,   shell1.color, shell2.color);
+      if (p2 == 1) lerpLine(shell1.new_mx1+shell1.offset_x, shell1.my1+shell1.offset_y, shell1.mz1+shell1.offset_z,   shell2.new_mx1+shell2.offset_x, shell2.my1+shell2.offset_y, shell2.mz1+shell2.offset_z,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_mx1+shell1.offset_x, shell1.my1+shell1.offset_y, shell1.mz1+shell1.offset_z,   shell2.new_mx2+shell2.offset_x, shell2.my2+shell2.offset_y, shell2.mz2+shell2.offset_z,   shell1.color, shell2.color);
     } else {
-      if (p2 == 1) lerpLine(shell1.new_mx2, shell1.my2, shell1.mz2,   shell2.new_mx1, shell2.my1, shell2.mz1,   shell1.color, shell2.color);
-      else         lerpLine(shell1.new_mx2, shell1.my2, shell1.mz2,   shell2.new_mx2, shell2.my2, shell2.mz2,   shell1.color, shell2.color);
+      if (p2 == 1) lerpLine(shell1.new_mx2+shell1.offset_x, shell1.my2+shell1.offset_y, shell1.mz2+shell1.offset_z,   shell2.new_mx1+shell2.offset_x, shell2.my1+shell2.offset_y, shell2.mz1+shell2.offset_z,   shell1.color, shell2.color);
+      else         lerpLine(shell1.new_mx2+shell1.offset_x, shell1.my2+shell1.offset_y, shell1.mz2+shell1.offset_z,   shell2.new_mx2+shell2.offset_x, shell2.my2+shell2.offset_y, shell2.mz2+shell2.offset_z,   shell1.color, shell2.color);
     }
   }
 }
