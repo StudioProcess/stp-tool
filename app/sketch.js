@@ -175,7 +175,7 @@ function createGUI() {
   c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
   c_barMirroring = gui.add(params, 'barMirroring');
   c_useDots = gui.add(params, 'useDots');
-  gui.add(params, 'segments', 1, 150);
+  gui.add(params, 'segments', 1, 150, 1);
   gui.add(params, 'rotationSteps', 3, 50);
 
   c_shell1 = createShellGUI(shell1, 'shell1');
@@ -242,16 +242,17 @@ function update() {
 }
 
 function lerpLine(ax, ay, az,   bx, by, bz,   cola, colb) {
-  let segments = params.segments;
+  let segments = floor(params.segments);
   if (!params.useDots) {
     // 0 – 1 – 2
     for (let i=0; i<segments; i++) {
       let c = lerpColor( color(cola), color(colb), (i+0.5)/segments );
       c.setAlpha(params.barOpacity * 255);
       stroke(c);
+      let segx=(bx-ax)/segments, segy=(by-ay)/segments, segz=(bz-az)/segments; // segment vector
       line(
-        ax+(bx-ax)/segments*i, ay+(by-ay)/segments*i, az+(bz-az)/segments*i,
-        ax+(bx-ax)/segments*(i+1), ay+(by-ay)/segments*(i+1), az+(bz-az)/segments*(i+1)
+        ax+segx*i, ay+segy*i, az+segz*i,
+        ax+segx*(i+1), ay+segy*(i+1), az+segz*(i+1)
       );
     }
   } else {
