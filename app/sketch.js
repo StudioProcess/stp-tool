@@ -195,12 +195,11 @@ function createGUI() {
 }
 
 function setupCamera() {
-  if (exportUsed) {
-    // BUG: once smooth() was called (for export), switching projection doesn't work, so we just make an entirely new canvas
-    noCanvas();
-    createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
-    disableEventDefaults();
-  }
+  // if (exportUsed) {
+  // BUG: once smooth() was called (for export), switching projection doesn't work, so we just make an entirely new canvas
+  noCanvas();
+  createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
+  // }
   if (params.useOrtho) {
     // ortho();
     // ortho(-width/2, +width/2, -height/2, +height/2, 0, Math.max(width, height)); // default
@@ -208,6 +207,8 @@ function setupCamera() {
   } else {
     perspective();
   }
+  smooth(); // Edit: Always use smooth() (needs to be after switching projection)
+  disableEventDefaults(); // needs to be after smooth()
 }
 
 function setup() {
@@ -215,7 +216,8 @@ function setup() {
   createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
   pixelDensity(1);
   setupCamera();
-  // Start with implicit noSmooth()
+  // Start with implicit noSmooth(). Edit: Always use smooth()
+  smooth();
 
   shell1 = new Shell(240, 0, 0, 4, '#c5f1ff');
   shell2 = new Shell(230, 0, 1, 5, '#ff9494');
@@ -351,12 +353,12 @@ let exportUsed = false;
 function exportFrame() {
   let wasRunning = clock.running;
   if (wasRunning) clock.stop();
-  smooth(); // needs to be before resizeCanvas() otherwise the export is empty
+  // smooth(); // needs to be before resizeCanvas() otherwise the export is empty
   resizeCanvas(RES_EXPORT, RES_EXPORT);
   // call to draw() not necessessary
   saveCanvas(new Date().toISOString(), 'png');
 
-  noSmooth();
+  // noSmooth();
   resizeCanvas(RES_RUNTIME, RES_RUNTIME);
   if (wasRunning) clock.start();
   exportUsed = true;
