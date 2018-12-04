@@ -12,6 +12,7 @@ let params = {
   showCenters: false,
   guideOpacity: 1.00,
   guideWeight: 1,
+  guideSegments: 25, // 25 is defautlt, 50 seems to be max detail for ellipse()
   barWeight: 60,
   barOpacity: 0.99,
   useOrtho: true,
@@ -128,7 +129,7 @@ class Shell {
     if (params.showCenters) box(10);
     pop();
 
-    if (params.showGuides) ellipse(0, 0, this.currentRadius*2);
+    if (params.showGuides) ellipse(0, 0, this.currentRadius*2, this.currentRadius*2, params.guideSegments);
 
     c = color(this.color);
     c.setAlpha(params.barOpacity * 255);
@@ -180,6 +181,7 @@ function createGUI() {
   gui.addColor(params, 'guideColor');
   gui.add(params, 'guideOpacity', 0, 1);
   gui.add(params, 'guideWeight', 0, 10);
+  gui.add(params, 'guideSegments', 4, 60, 1);
   c_guide = gui.add(params, 'showGuides');
   gui.add(params, 'showCenters');
   gui.add(params, 'barWeight', 1, 300);
