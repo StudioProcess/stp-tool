@@ -6,10 +6,10 @@ const rotationSensitivity = 2;
 const translationSensitivity = 1;
 
 let params = {
-  bgColor: '#fff',
-  guideColor: '#ddd',
+  bgColor: '#2d2d2d',
+  guideColor: '#fff',
   showGuides: true,
-  guideOpacity: 0.15,
+  guideOpacity: 1.00,
   barWeight: 60,
   barOpacity: 0.99,
   useOrtho: true,
