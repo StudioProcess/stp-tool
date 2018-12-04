@@ -181,7 +181,7 @@ function createGUI() {
   gui.addColor(params, 'guideColor');
   gui.add(params, 'guideOpacity', 0, 1);
   gui.add(params, 'guideWeight', 0, 10);
-  gui.add(params, 'guideSegments', 4, 60, 1);
+  gui.add(params, 'guideSegments', 4, 50, 1);
   c_guide = gui.add(params, 'showGuides');
   gui.add(params, 'showCenters');
   gui.add(params, 'barWeight', 1, 300);
