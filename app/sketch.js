@@ -9,7 +9,9 @@ let params = {
   bgColor: '#2d2d2d',
   guideColor: '#fff',
   showGuides: true,
+  showCenters: false,
   guideOpacity: 1.00,
+  guideWeight: 1,
   barWeight: 60,
   barOpacity: 0.99,
   useOrtho: true,
@@ -40,7 +42,7 @@ function block(ax, ay, bx, by) {
   // push(); translate(bx, by); rotate(a+HALF_PI); box(10); pop();
   translate(mx, my);
   rotate(a+HALF_PI);
-  box(params.barWeight, d, params.barWeight);
+  if (params.showCenters) box(params.barWeight, d, params.barWeight);
   pop();
 }
 
@@ -95,13 +97,13 @@ class Shell {
     let c = color(params.guideColor);
     c.setAlpha(params.guideOpacity*255)
     stroke(c);
-    strokeWeight(1*globalScale);
+    strokeWeight(params.guideWeight*globalScale);
     noFill();
     
-    if (params.showGuides) box(10); // absolute center (before translation)
+    if (params.showCenters) box(10); // absolute center (before translation)
     translate(this.offset_x, this.offset_y, this.offset_z);
     rotateY(this.a_axis);
-    if (params.showGuides) box(10); // center 
+    if (params.showCenters) box(10); // center 
     if (params.showGuides) line (0, -this.currentRadius*1.5, 0, this.currentRadius*1.5); // y-axis
 
     // particle 1 (+ mirror)
@@ -112,7 +114,7 @@ class Shell {
     this.px1 = px1; this.py1 = py1; this.mx1 = mx1; this.my1 = my1;
     push();
     translate( px1, py1 );
-    if (params.showGuides) box(10);
+    if (params.showCenters) box(10);
     pop();
 
     // particle 2
@@ -123,7 +125,7 @@ class Shell {
     this.px2 = px2; this.py2 = py2; this.mx2 = mx2; this.my2 = my2;
     push();
     translate( px2, py2 );
-    if (params.showGuides) box(10);
+    if (params.showCenters) box(10);
     pop();
 
     if (params.showGuides) ellipse(0, 0, this.currentRadius*2);
@@ -177,7 +179,9 @@ function createGUI() {
   gui.addColor(params, 'bgColor');
   gui.addColor(params, 'guideColor');
   gui.add(params, 'guideOpacity', 0, 1);
+  gui.add(params, 'guideWeight', 0, 10);
   c_guide = gui.add(params, 'showGuides');
+  gui.add(params, 'showCenters');
   gui.add(params, 'barWeight', 1, 300);
   gui.add(params, 'barOpacity', 0, 1);
   // c_useBlocks = gui.add(params, 'useBlocks');
