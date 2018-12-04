@@ -6,7 +6,7 @@ const rotationSensitivity = 2;
 const translationSensitivity = 1;
 
 let params = {
-  bgColor: '#2d2d2d',
+  bgColor: '#252525',
   guideColor: '#fff',
   showGuides: true,
   showCenters: false,
