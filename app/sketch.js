@@ -43,7 +43,7 @@ function block(ax, ay, bx, by) {
   // push(); translate(bx, by); rotate(a+HALF_PI); box(10); pop();
   translate(mx, my);
   rotate(a+HALF_PI);
-  if (params.showCenters) box(params.barWeight, d, params.barWeight);
+  box(params.barWeight, d, params.barWeight);
   pop();
 }
 
