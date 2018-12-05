@@ -19,7 +19,7 @@ let params = {
   barMirroring: false,
   useElement: 0, // 0..flat-bar, 1..block, 2..tube
   connections: 0, // 1..lerp-loop, 2..lerp-triangles
-  segments: 50,
+  segments: 20,
   useDots: false,
   rotationSteps: 8
 };
