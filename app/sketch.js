@@ -6,7 +6,7 @@ const rotationSensitivity = 2;
 const translationSensitivity = 1;
 
 let params = {
-  bgColor: '#252525',
+  bgColor: '#181818', // #252525
   guideColor: '#fff',
   showGuides: true,
   showCenters: false,
@@ -21,7 +21,7 @@ let params = {
   connections: 0, // 1..lerp-loop, 2..lerp-triangles
   segments: 50,
   useDots: false,
-  rotationSteps: 16
+  rotationSteps: 8
 };
 
 let globalScale = 1;
@@ -77,7 +77,7 @@ class Shell {
 
     this.lastUpdate = 0;
     this.currentRadius = radius;
-    
+
     this.offset_x = 0;
     this.offset_y = 0;
     this.offset_z = 0;
@@ -100,11 +100,11 @@ class Shell {
     stroke(c);
     strokeWeight(params.guideWeight*globalScale);
     noFill();
-    
+
     if (params.showCenters) box(10); // absolute center (before translation)
     translate(this.offset_x, this.offset_y, this.offset_z);
     rotateY(this.a_axis);
-    if (params.showCenters) box(10); // center 
+    if (params.showCenters) box(10); // center
     if (params.showGuides) line (0, -this.currentRadius*1.5, 0, this.currentRadius*1.5); // y-axis
 
     // particle 1 (+ mirror)
