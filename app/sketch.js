@@ -191,7 +191,7 @@ function createGUI() {
   c_useOrtho = gui.add(params, 'useOrtho').onFinishChange(() => { setupCamera(); });
   c_barMirroring = gui.add(params, 'barMirroring');
   c_useDots = gui.add(params, 'useDots');
-  gui.add(params, 'segments', 1, 150, 1);
+  gui.add(params, 'segments', 1, 35, 1);
   gui.add(params, 'rotationSteps', 3, 50);
 
   c_shell1 = createShellGUI(shell1, 'shell1');
