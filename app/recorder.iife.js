@@ -493,7 +493,7 @@ var recorder = (function (exports) {
   }
 
   function recording() {
-    return state.recording;
+    return state.recording || state.startRecording;
   }
 
   function saveTarball(options = {last:false}) {

@@ -1,5 +1,5 @@
 const RES_RUNTIME = 1000;
-const RES_EXPORT  = 4096; // 4096 seems to be max
+const RES_EXPORT  = 2160; // 4096 seems to be max
 const FRAMERATE = 30; // 0 means max
 
 const scaleSensitivity = 1;
@@ -440,6 +440,13 @@ function keyPressed() {
     globalScale = 1; translation = [0,0]; rotation = [0,0,0];
   } else if (key == 'r') {
     recorder.startstop({framerate:FRAMERATE});
+    if (recorder.recording()) {
+      resizeCanvas(RES_EXPORT, RES_EXPORT);
+    } else {
+      resizeCanvas(RES_RUNTIME, RES_RUNTIME);
+      exportUsed = true;
+      disableEventDefaults();
+    }
   }
 }
 
