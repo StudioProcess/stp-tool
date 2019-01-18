@@ -430,22 +430,27 @@ var recorder = (function (exports) {
       // IMPORTANT: Skip recording this frame, just run callback
       // This frame still has unhijacked timing
       callRequestAnimationFrameCallbacks();
-      return;
+      return Promise.resolve();
     }
-    if (!state.recording) return;
+    if (!state.recording) return Promise.resolve();
     
     let canvas = canvasElement;
     
     // Capture a frame; numbering is currentFrame+1
-    console.log('CAPTURING FRAME #' + (state.currentFrame+1) + ' TIME ' + state.currentTime);
+    let frameNumber = (state.currentFrame+1);
+    console.log('CAPTURING FRAME #' + frameNumber + ' TIME ' + state.currentTime);
     // console.assert(performance.now() === state.currentTime, "checking performance.now()");
     let filename = `${state.currentFrame+1}`.padStart(7,'0') + '.png';
-    
+
+    // advance time here already, there were double frame numbers before.
+    state.currentTime += state.frameTime;
+    state.currentFrame++;
+    updateHUD();
     // saveCanvasToPNG(canvas, filename).then(() => {
-    addPNGToTarball(canvas, filename).then(() => {
-      // advance time
-      state.currentTime += state.frameTime;
-      state.currentFrame++;
+    return addPNGToTarball(canvas, filename).then(() => {
+      // // advance time
+      // state.currentTime += state.frameTime;
+      // state.currentFrame++;
       
       callRequestAnimationFrameCallbacks();
       
@@ -455,9 +460,10 @@ var recorder = (function (exports) {
       } else if (tape.length / 1000000 >= state.tarMaxSize) {
         saveTarball();
       }
+      
+
+      return frameNumber;
     });
-    
-    updateHUD();
   }
 
 

@@ -347,7 +347,13 @@ function draw() {
     }
     pop();
   }
-  recorder.update(_curElement.elt); // this seems to be the correct canvas (from p5.js source saveCanvas()). document.querySelector('canvas') also works
+  
+  // _curElement.elt  seems to be the correct canvas (from p5.js source saveCanvas()). document.querySelector('canvas') also works
+  recorder.update(_curElement.elt).then((frameNumber) => {
+    if (recorder.recording()) {
+      requestAnimationFrame(() => redraw());
+    }
+  });
 }
 
 function getController(property, gui = gui) {
@@ -441,11 +447,13 @@ function keyPressed() {
   } else if (key == 'r') {
     recorder.startstop({framerate:FRAMERATE});
     if (recorder.recording()) {
+      noLoop();
       resizeCanvas(RES_EXPORT[0], RES_EXPORT[1]);
     } else {
       resizeCanvas(RES_RUNTIME[0], RES_RUNTIME[1]);
       exportUsed = true;
       disableEventDefaults();
+      loop();
     }
   }
 }
