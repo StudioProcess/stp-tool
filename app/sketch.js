@@ -1,7 +1,6 @@
-console.log(recorder);
-
 const RES_RUNTIME = 1000;
 const RES_EXPORT  = 4096; // 4096 seems to be max
+const FRAMERATE = 30; // 0 means max
 
 const scaleSensitivity = 1;
 const rotationSensitivity = 2;
@@ -231,11 +230,11 @@ function setupCamera() {
 
 function setup() {
   clock = new Clock();
-  createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
   pixelDensity(1);
   setupCamera();
   // Start with implicit noSmooth(). Edit: Always use smooth()
   smooth();
+  if (FRAMERATE > 0) frameRate(FRAMERATE);
 
   shell1 = new Shell(240, 0, 0, 4, '#c5f1ff');
   shell2 = new Shell(230, 0, 1, 5, '#ff9494');
@@ -252,7 +251,8 @@ function setup() {
 }
 
 function update() {
-  clock.update(millis());
+  // clock.update(millis());
+  clock.update(recorder.now());
   let now = clock.time();
   shell1.update(now);
   shell2.update(now);
@@ -347,6 +347,7 @@ function draw() {
     }
     pop();
   }
+  recorder.update(_curElement.elt); // this seems to be the correct canvas (from p5.js source saveCanvas()). document.querySelector('canvas') also works
 }
 
 function getController(property, gui = gui) {
@@ -437,6 +438,8 @@ function keyPressed() {
   } else if (key == 'Backspace') {
     // reset transformations
     globalScale = 1; translation = [0,0]; rotation = [0,0,0];
+  } else if (key == 'r') {
+    recorder.startstop({framerate:FRAMERATE});
   }
 }
 

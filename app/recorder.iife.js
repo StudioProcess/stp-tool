@@ -412,7 +412,7 @@ var recorder = (function (exports) {
     state.tarSequence = 0;
     state.tarFilename = new Date().toISOString();
     
-    hijackTimingFunctions();
+    // hijackTimingFunctions();
     
     tape = new Tarball();
     
