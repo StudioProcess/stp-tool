@@ -1,5 +1,5 @@
-const RES_RUNTIME = 1000;
-const RES_EXPORT  = 2160; // 4096 seems to be max
+const RES_RUNTIME = [1280, 720];
+const RES_EXPORT  = [2560, 1440]; // 4096 seems to be max
 const FRAMERATE = 30; // 0 means max
 
 const scaleSensitivity = 1;
@@ -215,7 +215,7 @@ function setupCamera() {
   // if (exportUsed) {
   // BUG: once smooth() was called (for export), switching projection doesn't work, so we just make an entirely new canvas
   noCanvas();
-  createCanvas(RES_RUNTIME, RES_RUNTIME, WEBGL);
+  createCanvas(RES_RUNTIME[0], RES_RUNTIME[1], WEBGL);
   // }
   if (params.useOrtho) {
     // ortho();
@@ -374,12 +374,12 @@ function exportFrame() {
   let wasRunning = clock.running;
   if (wasRunning) clock.stop();
   // smooth(); // needs to be before resizeCanvas() otherwise the export is empty
-  resizeCanvas(RES_EXPORT, RES_EXPORT);
+  resizeCanvas(RES_EXPORT[0], RES_EXPORT[1]);
   // call to draw() not necessessary
   saveCanvas(new Date().toISOString(), 'png');
 
   // noSmooth();
-  resizeCanvas(RES_RUNTIME, RES_RUNTIME);
+  resizeCanvas([RES_RUNTIME[0]], RES_RUNTIME[1]);
   if (wasRunning) clock.start();
   exportUsed = true;
   disableEventDefaults();
@@ -441,9 +441,9 @@ function keyPressed() {
   } else if (key == 'r') {
     recorder.startstop({framerate:FRAMERATE});
     if (recorder.recording()) {
-      resizeCanvas(RES_EXPORT, RES_EXPORT);
+      resizeCanvas(RES_EXPORT[0], RES_EXPORT[1]);
     } else {
-      resizeCanvas(RES_RUNTIME, RES_RUNTIME);
+      resizeCanvas(RES_RUNTIME[0], RES_RUNTIME[1]);
       exportUsed = true;
       disableEventDefaults();
     }
