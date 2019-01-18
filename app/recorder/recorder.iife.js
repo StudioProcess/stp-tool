@@ -1,3 +1,8 @@
+/* 
+ * Generated from ES6 module code with rollup (v1.1.0):
+ * rollup recorder.js -f iife -o recorder.iife.js -n recorder
+ */
+
 var recorder = (function (exports) {
   'use strict';
 
@@ -418,7 +423,7 @@ var recorder = (function (exports) {
   }
 
 
-  function update(renderer) {
+  function update(canvasElement) {
     if (state.startRecording) {
       state.recording = true;
       state.startRecording = false;
@@ -429,7 +434,7 @@ var recorder = (function (exports) {
     }
     if (!state.recording) return;
     
-    let canvas = renderer.domElement;
+    let canvas = canvasElement;
     
     // Capture a frame; numbering is currentFrame+1
     console.log('CAPTURING FRAME #' + (state.currentFrame+1) + ' TIME ' + state.currentTime);
@@ -594,4 +599,3 @@ var recorder = (function (exports) {
   return exports;
 
 }({}));
-//# sourceMappingURL=recorder.iife.js.map

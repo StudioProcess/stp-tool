@@ -119,7 +119,7 @@ export function start(options) {
 }
 
 
-export function update(renderer) {
+export function update(canvasElement) {
   if (state.startRecording) {
     state.recording = true;
     state.startRecording = false;
@@ -130,7 +130,7 @@ export function update(renderer) {
   }
   if (!state.recording) return;
   
-  let canvas = renderer.domElement;
+  let canvas = canvasElement;
   
   // Capture a frame; numbering is currentFrame+1
   console.log('CAPTURING FRAME #' + (state.currentFrame+1) + ' TIME ' + state.currentTime);
