@@ -1,3 +1,5 @@
+console.log(recorder);
+
 const RES_RUNTIME = 1000;
 const RES_EXPORT  = 4096; // 4096 seems to be max
 
