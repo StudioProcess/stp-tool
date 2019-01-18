@@ -349,7 +349,7 @@ function draw() {
   }
   
   // _curElement.elt  seems to be the correct canvas (from p5.js source saveCanvas()). document.querySelector('canvas') also works
-  recorder.update(_curElement.elt).then((frameNumber) => {
+  recorder.update(_curElement.elt).then((_frameNumber) => {
     if (recorder.recording()) {
       requestAnimationFrame(() => redraw());
     }
@@ -465,7 +465,7 @@ function disableEventDefaults() {
 }
 
 function customControl() {
-  var cam = this._renderer._curCamera;
+  // var cam = this._renderer._curCamera;
   var scaleFactor = this.height < this.width ? this.height : this.width;
 
   if (this.mouseIsPressed) {
