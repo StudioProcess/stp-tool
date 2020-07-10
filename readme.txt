@@ -1,0 +1,1 @@
+Keyvisual for STP 2024 - European Capital of Culture, Bid Book 1
